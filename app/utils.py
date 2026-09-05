@@ -15,4 +15,10 @@ def clean_data(data: DataFrame):
     Checks and handles discrepancies in the data
     """
 
-    pass
+    # Drop completely empty rows
+    new_data = data.dropna(how="all")
+
+    # Remove duplicate rows
+    deduplicated_data = new_data.drop_duplicates()
+
+    return deduplicated_data

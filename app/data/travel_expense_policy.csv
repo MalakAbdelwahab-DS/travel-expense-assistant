@@ -11,4 +11,4 @@ Taxi,United Kingdom,,USD,Reimbursed at actuals; keep receipts
 Airfare,Global,,USD,Economy only for flights under 6 hours
 Airfare,Global,,USD,Business class permitted for flights over 6 hours
 Incidentals,Global,25,USD,Per day; no receipt required
-Meals,United Kingdom,75,USD,Per day; includes tips (duplicate of row 1 for de-dup handling)
+Meals,United Kingdom,75,USD,Per day; includes tips

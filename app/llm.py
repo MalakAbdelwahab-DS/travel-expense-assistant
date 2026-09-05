@@ -1,6 +1,6 @@
 from langchain.agents import create_agent
 from langchain.chat_models import BaseChatModel, init_chat_model
-from app.utils import load_data
+from app.utils import load_data, clean_data
 from app.config import API_KEY, TRAVEL_EXPENSE_POLICY_DATA_PATH, BASE_URL, MODEL_PROVIDER, MODEL_NAME, MODEL_TEMPERATURE
 from app.prompt import prompt
 
@@ -11,7 +11,9 @@ def get_travel_expenses_policy():
     data = load_data(
         TRAVEL_EXPENSE_POLICY_DATA_PATH
     )
-    return data
+
+    cleaned_data = clean_data(data)
+    return cleaned_data
 
 
 def get_model() -> BaseChatModel:
