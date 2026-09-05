@@ -116,7 +116,8 @@
 
 <body>
     <h2>Travel Expense Assistant</h2>
-    <span id="mode">checking mode…</span>
+
+    <span id="mode"></span>
 
     <div>
         <input id="question" type="text" placeholder="Ask a question about the travel expense policy...">
@@ -129,14 +130,20 @@
         async function loadStatus() {
             const res = await fetch('/status');
             const data = await res.json();
+
             const el = document.getElementById('mode');
             const isReal = data.mode === 'ai_agent';
-            el.textContent = isReal ? '● Real Agent' : '● Offline CSV Retrieval';
+
+            el.textContent = isReal
+                ? '● Real Agent'
+                : '● Offline CSV Retrieval';
+
             el.className = isReal ? 'real' : 'offline';
         }
 
         function renderMarkdown(text) {
             const answerEl = document.getElementById('answer');
+
             if (window.marked) {
                 answerEl.innerHTML = marked.parse(text);
             } else {
@@ -147,25 +154,38 @@
         async function ask() {
             const question = document.getElementById('question').value;
             const answerEl = document.getElementById('answer');
+
             if (!question.trim()) return;
+
             answerEl.textContent = 'Thinking...';
 
-            const res = await fetch('/ask-agent?question=' + encodeURIComponent(question), {
-                method: 'POST'
-            });
+            const res = await fetch(
+                '/ask-agent?question=' + encodeURIComponent(question),
+                {
+                    method: 'POST'
+                }
+            );
+
             const data = await res.json();
 
             let text;
+
             if (Array.isArray(data)) {
                 text = data.map(b => b.text).join('\n');
             } else if (data && typeof data.response === 'string') {
                 text = data.response;
             } else {
-                text = '```json\n' + JSON.stringify(data, null, 2) + '\n```';
+                text = '```json\n' +
+                    JSON.stringify(data, null, 2) +
+                    '\n```';
             }
+
             renderMarkdown(text);
             loadStatus();
         }
+
+        // Show the mode immediately when the page loads
+        loadStatus();
     </script>
 </body>
 
