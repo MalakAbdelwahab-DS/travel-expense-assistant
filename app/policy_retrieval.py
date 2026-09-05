@@ -31,10 +31,10 @@ class PolicyRetrieval:
         words = question.lower().split()
 
         matches = self.data[self.data.apply(
-            lambda row: any(
+            lambda row: sum(
                 w in " ".join(str(v).lower() for v in row)
                 for w in words
-            ),
+            ) / len(words) >= 0.6,
             axis=1
         )]
 
