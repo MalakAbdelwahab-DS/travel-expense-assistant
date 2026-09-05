@@ -71,7 +71,7 @@
             const res = await fetch('/status');
             const data = await res.json();
             const el = document.getElementById('mode');
-            const isReal = data.mode === 'Real Agent';
+            const isReal = data.mode === 'ai_agent';
             el.textContent = isReal ? '● Real Agent' : '● Offline CSV Retrieval';
             el.className = isReal ? 'real' : 'offline';
         }
