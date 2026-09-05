@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Travel Expense Assistant</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
     <style>
         body {
             font-family: system-ui, sans-serif;
@@ -49,8 +50,66 @@
             padding: 14px;
             background: #f4f4f4;
             border-radius: 8px;
-            white-space: pre-wrap;
             min-height: 20px;
+            line-height: 1.5;
+        }
+
+        #answer p {
+            margin: 0 0 10px;
+        }
+
+        #answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        #answer h1,
+        #answer h2,
+        #answer h3 {
+            margin: 14px 0 8px;
+        }
+
+        #answer ul,
+        #answer ol {
+            margin: 0 0 10px;
+            padding-left: 22px;
+        }
+
+        #answer code {
+            background: #e6e6e6;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        #answer pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        #answer pre code {
+            background: none;
+            padding: 0;
+        }
+
+        #answer blockquote {
+            margin: 0 0 10px;
+            padding-left: 12px;
+            border-left: 3px solid #ccc;
+            color: #555;
+        }
+
+        #answer table {
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        #answer th,
+        #answer td {
+            border: 1px solid #ccc;
+            padding: 4px 8px;
         }
     </style>
 </head>
@@ -76,6 +135,15 @@
             el.className = isReal ? 'real' : 'offline';
         }
 
+        function renderMarkdown(text) {
+            const answerEl = document.getElementById('answer');
+            if (window.marked) {
+                answerEl.innerHTML = marked.parse(text);
+            } else {
+                answerEl.textContent = text;
+            }
+        }
+
         async function ask() {
             const question = document.getElementById('question').value;
             const answerEl = document.getElementById('answer');
@@ -87,13 +155,15 @@
             });
             const data = await res.json();
 
+            let text;
             if (Array.isArray(data)) {
-                answerEl.textContent = data.map(b => b.text).join('\n');
+                text = data.map(b => b.text).join('\n');
             } else if (data && typeof data.response === 'string') {
-                answerEl.textContent = data.response;
+                text = data.response;
             } else {
-                answerEl.textContent = JSON.stringify(data, null, 2);
+                text = '```json\n' + JSON.stringify(data, null, 2) + '\n```';
             }
+            renderMarkdown(text);
             loadStatus();
         }
     </script>
