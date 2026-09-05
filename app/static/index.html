@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Expense Assistant</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        #mode {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .real {
+            background: #d1f7d6;
+            color: #0a6b1e;
+        }
+
+        .offline {
+            background: #ffe8b3;
+            color: #8a5700;
+        }
+
+        #question {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        #answer {
+            margin-top: 20px;
+            padding: 14px;
+            background: #f4f4f4;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Travel Expense Assistant</h2>
+    <span id="mode">checking mode…</span>
+
+    <div>
+        <input id="question" type="text" placeholder="Ask a question about the travel expense policy...">
+        <button onclick="ask()">Ask</button>
+    </div>
+
+    <div id="answer"></div>
+
+    <script>
+        async function loadStatus() {
+            const res = await fetch('/status');
+            const data = await res.json();
+            const el = document.getElementById('mode');
+            const isReal = data.mode === 'Real Agent';
+            el.textContent = isReal ? '● Real Agent' : '● Offline CSV Retrieval';
+            el.className = isReal ? 'real' : 'offline';
+        }
+
+        async function ask() {
+            const question = document.getElementById('question').value;
+            const answerEl = document.getElementById('answer');
+            if (!question.trim()) return;
+            answerEl.textContent = 'Thinking...';
+
+            const res = await fetch('/ask-agent?question=' + encodeURIComponent(question), {
+                method: 'POST'
+            });
+            const data = await res.json();
+            answerEl.textContent = Array.isArray(data)
+                ? data.map(b => b.text).join('\n')
+                : JSON.stringify(data, null, 2);
+        }
+
+        loadStatus();
+    </script>
+</body>
+
+</html>
