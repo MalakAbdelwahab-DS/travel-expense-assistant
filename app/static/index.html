@@ -86,12 +86,16 @@
                 method: 'POST'
             });
             const data = await res.json();
-            answerEl.textContent = Array.isArray(data)
-                ? data.map(b => b.text).join('\n')
-                : JSON.stringify(data, null, 2);
-        }
 
-        loadStatus();
+            if (Array.isArray(data)) {
+                answerEl.textContent = data.map(b => b.text).join('\n');
+            } else if (data && typeof data.response === 'string') {
+                answerEl.textContent = data.response;
+            } else {
+                answerEl.textContent = JSON.stringify(data, null, 2);
+            }
+            loadStatus();
+        }
     </script>
 </body>
 

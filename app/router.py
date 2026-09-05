@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.config import API_KEY
-from app.service import PolicyRetrieval
+from app.policy_retrieval import PolicyRetrieval
 from app.schema import Mode, Status, AskAgentResponse
 
 router = APIRouter()
